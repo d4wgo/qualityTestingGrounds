@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Stats</title>
+        <style>
+            body{
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+            }
+        </style>
+    </head>
+    <body>
+        <p id="name"></p>
+        <p id="plays"></p>
+        <p id="wins"></p>
+        <p id="highscore"></p>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io.connect('http://localhost:2000');
+            var user =  localStorage.getItem("uN");
+            document.getElementById("name").innerHTML = user;
+            socket.emit("getStats", user);
+            socket.on("statsNw", function(plays,wins,highscore){
+                document.getElementById("plays").innerHTML = "Plays: " + plays;
+                document.getElementById("wins").innerHTML = "Wins: " + wins;
+                document.getElementById("highscore").innerHTML = "Highscore: " + highscore;
+            });
+        </script>
+    </body>
+</html>

@@ -1,28 +1,58 @@
 <!doctype html>
 <html>
     <head>
-        <title>Wtf</title>
+        <title>Test</title>
         <style>
-
+            body{
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+            }
+            #errorMsg{
+                color:red;
+            }
         </style>
     </head>
     <body>
         <h1>
-            henlo
+            Input to database test
         </h1>
         <script src="/socket.io/socket.io.js"></script>
         <script>
             var socket = io.connect('http://localhost:2000');
+            var myUname;
             function signIn(){
                 var x = document.getElementById("uName").value;
                 console.log(x);
+                myUname = x;
                 socket.emit('userIn', x);
             }
+            function viewStats(){
+                var x = document.getElementById("uName").value;
+                //console.log(x);
+                myUname = x;
+                socket.emit('viewStats', x);
+            }
+            socket.on("tooShortError", function(){
+                document.getElementById("errorMsg").innerHTML = "Enter a longer username";   
+            });
+            socket.on("successSignIn", function(){
+                localStorage.setItem("uN", myUname);
+                window.location.pathname = '/play';
+            });
+            socket.on("userFalse", function(){
+                document.getElementById("errorMsg").innerHTML = "That user does not exist";   
+            });
+            socket.on("userFound", function(){
+                localStorage.setItem("uN", myUname);
+                window.location.pathname = '/stats';
+            });
         </script>
-        <form>
-                userName:<br>
-                <input id="uName" type="text" name="firstname"><br>
-                <input type="submit" value="Submit" onclick="signIn();">
-              </form>
+        <form>                username:<br>
+            <input id="uName" type="text" name="username"><br>
+            <input type="button" value="Play" onclick="signIn();">
+            <input type="button" value="View Statistics" onclick="viewStats();">
+        </form>
+        <p id="errorMsg"></p>
+        <br>
+        
     </body>
 </html>
