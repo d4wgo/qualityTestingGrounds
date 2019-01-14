@@ -22,7 +22,7 @@ function databaseInitialize() {
 }
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.set('port', 2000);
+app.set('port', 80);
 app.use('/static', express.static(__dirname + '/static'));
 app.get('/',function(req,res){
   res.sendFile(path.join(__dirname+'/index.html'));
@@ -37,8 +37,14 @@ app.get('/play',function(req,res){
 app.get('/stats',function(req,res){
   res.sendFile(path.join(__dirname+'/stats.html'));
 });
-server.listen(2000, function() {
-    console.log('Starting server on port 2000');
+app.get('/test',function(req,res){
+  res.sendFile(path.join(__dirname+'/testG.html'));
+});
+app.get('/in',function(req,res){
+  res.sendFile(path.join(__dirname+'/in.html'));
+});
+server.listen(80, function() {
+    console.log('Starting server on port 80');
 });
 io.on('connection', function (socket) {
     //socket.emit('news', { hello: 'world' });
@@ -52,13 +58,13 @@ io.on('connection', function (socket) {
           //console.log("yesW");
           users.insert({name: data, plays: 0, wins: 0, highscore: 0});
           //console.log(users.data);
-          //console.log("Succesfull sign in for \"" + data + "\"");
+          console.log("Succesfull sign in for \"" + data + "\"");
           socket.emit("successSignIn");
           //new user made
         }
         else{
           //sucess state, would actually send all the data about the user but i dont have any
-          //console.log("Succesfull sign in for \"" + data + "\"");
+          console.log("Succesfull sign in for \"" + data + "\"");
           socket.emit("successSignIn");
         }
       }
@@ -81,7 +87,7 @@ io.on('connection', function (socket) {
       socket.emit("statsNw",tempUser.plays,tempUser.wins,tempUser.highscore);
     });
     socket.on('submitScore', function (user,won,score) {
-      //console.log("Score recieved for " + user + " Score: " + score);
+      console.log("Score recieved for " + user + " Score: " + score);
       var tempUser = users.findOne({name: user});
       tempUser.plays++;;
       if(won){
